@@ -15,8 +15,8 @@
 
 | Campo | |
 |---|---|
-| **Total de bugs corrigidos** | 2 / 12 |
-| **Total de ajustes de Clean Code** | 1 / 6 |
+| **Total de bugs corrigidos** | 4 / 12 |
+| **Total de ajustes de Clean Code** | 2 / 6 |
 
 ---
 
@@ -26,6 +26,8 @@
 |---|---|---|---|---|
 | bug01 | A API permitia cadastrar conteúdos com duração igual a 0 ou menor que 0. | `Conteudo.java` — o construtor não possuía validação para `duracaoMinutos`. | Foi adicionada uma validação para rejeitar durações menores ou iguais a zero. | Validação de regras de negócio e programação defensiva. |
 | bug02 | A consulta por categoria retornava uma lista vazia mesmo existindo conteúdos cadastrados naquela categoria. | `ConteudoController.java` — a comparação de Strings era realizada utilizando `==`. | A comparação foi alterada para `categoria.equals(c.getCategoria())`. | Comparação de objetos e Strings em Java. |
+| bug03 | A promoção do filme estava aumentando o preço em 20%, em vez de aplicar o desconto previsto no contrato. | `Filme.java` — o método `aplicarPromocao()` multiplicava o preço por `1.2`. | A multiplicação foi alterada para `0.8`, aplicando corretamente o desconto de 20%. | Polimorfismo, interface e regras de negócio.
+| bug04 | O preço da série não era calculado corretamente porque o método da `Serie` não sobrescrevia o método de `Conteudo`. | `Serie.java` — o método `calcularPrecoAluguel(double desconto)` possuía uma assinatura diferente do método da classe pai. | O método foi alterado para `calcularPrecoAluguel()` e recebeu a anotação `@Override`, fazendo a sobrescrita correta e calculando R$ 4,90 por temporada. | Herança, sobrescrita (override) e polimorfismo.
 
 ---
 
@@ -34,6 +36,7 @@
 | # | Onde estava | Qual princípio/boas práticas era violado | O que eu mudei |
 |---|---|---|---|
 | clean01 | `Conteudo.java` — o atributo `duracaoMinutos` estava como `public` e era acessado diretamente nos controllers de Filme, Série e Documentário. | Violação do princípio de encapsulamento. | O atributo foi alterado para `private` e os controllers passaram a utilizar `getDuracaoMinutos()`. |
+| clean02 | `ConteudoController.java` — havia um método antigo de desconto e um bloco de código comentado relacionado a cupons, sem uso no funcionamento atual da aplicação. | Presença de código morto e comentários obsoletos, dificultando a leitura e manutenção do código. | O método `calcularDescontoAntigo()` e o bloco de código comentado de cupons foram removidos. 
 
 ---
 
