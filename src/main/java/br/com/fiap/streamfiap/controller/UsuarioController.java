@@ -3,8 +3,11 @@ package br.com.fiap.streamfiap.controller;
 import br.com.fiap.streamfiap.model.Usuario;
 import br.com.fiap.streamfiap.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -13,18 +16,22 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // POST /api/usuarios - Cadastrar usuário (cria nova instância sem o id vindo do cliente)
-    @PostMapping
-    public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
-        Usuario novo = new Usuario(usuario.getNome(), usuario.getIdade(), usuario.getCreditos());
-        return ResponseEntity.status(201).body(usuarioRepository.save(novo));
+    @GetMapping
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
     }
 
-    // GET /api/usuarios/{id} - Buscar usuário por ID
+    @PostMapping
+    public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuarioParaCadastrar) {
+        // Clean 03: Variaveis renomeadas para melhorar a legibilidade
+        Usuario usuarioSalvo = usuarioRepository.save(usuarioParaCadastrar);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
-        return ResponseEntity.ok(usuario);
+        return usuarioRepository.findById(id)
+                .map(usuarioEncontrado -> ResponseEntity.ok(usuarioEncontrado))
+                .orElse(ResponseEntity.notFound().build());
     }
 }
