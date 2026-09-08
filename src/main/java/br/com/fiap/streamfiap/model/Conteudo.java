@@ -22,12 +22,16 @@ public abstract class Conteudo {
     }
 
     protected Conteudo(String titulo, String categoria, int duracaoMinutos, int classificacaoEtaria, boolean disponivel) {
-        this.titulo = titulo;
-        this.categoria = categoria;
-        this.duracaoMinutos = duracaoMinutos;
-        this.classificacaoEtaria = classificacaoEtaria;
-        this.disponivel = disponivel;
+    if (duracaoMinutos <= 0) {
+        throw new IllegalArgumentException("A duração deve ser maior que zero.");
     }
+
+    this.titulo = titulo;
+    this.categoria = categoria;
+    this.duracaoMinutos = duracaoMinutos;
+    this.classificacaoEtaria = classificacaoEtaria;
+    this.disponivel = disponivel;
+}
 
     public double calcularPrecoAluguel() {
         return 9.90;
