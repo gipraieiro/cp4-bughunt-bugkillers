@@ -1,58 +1,25 @@
-package br.com.fiap.streamfiap.model;
- 
-import jakarta.persistence.*;
- 
-@Entity
+public void alugarConteudo(Conteudo conteudo) {
 
-@Table(name = "usuarios")
+    // Bug 08: Impedir o aluguel de conteúdo indisponível
 
-public class Usuario {
- 
-    // Bug 06: Adicionada estratégia de geração automática de ID
+    if (!conteudo.isDisponivel()) {
 
-    @Id
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id;
- 
-    private String nome;
-
-    private int idade;
-
-    private double creditos;
- 
-    public Usuario() {}
- 
-    public Usuario(String nome, int idade, double creditos) {
-
-        // Bug 05: Corrigida a atribuição do nome utilizando o operador 'this'
-
-        this.nome = nome;
-
-        this.idade = idade;
-
-        this.creditos = creditos;
+        throw new IllegalStateException("O conteudo '" + conteudo.getTitulo() + "' esta indisponivel para aluguel.");
 
     }
  
-    // Getters e Setters
+    double preco = conteudo.calcularPrecoAluguel();
+ 
+    // Bug 07: Validar creditos insuficientes antes de realizar o debito
 
-    public Long getId() { return id; }
+    if (this.creditos < preco) {
 
-    public void setId(Long id) { this.id = id; }
+        throw new IllegalArgumentException("Creditos insuficientes para alugar o conteudo.");
 
-    public String getNome() { return nome; }
+    }
+ 
+    this.creditos -= preco;
 
-    public void setNome(String nome) { this.nome = nome; }
-
-    public int getIdade() { return idade; }
-
-    public void setIdade(int idade) { this.idade = idade; }
-
-    public double getCreditos() { return creditos; }
-
-    public void setCreditos(double creditos) { this.creditos = creditos; }
+    conteudo.setDisponivel(false);
 
 }
- 
