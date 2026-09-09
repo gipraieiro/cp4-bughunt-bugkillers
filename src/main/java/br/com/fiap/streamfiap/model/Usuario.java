@@ -1,98 +1,58 @@
 package br.com.fiap.streamfiap.model;
-
-import br.com.fiap.streamfiap.exception.ClassificacaoIndicativaException;
-import br.com.fiap.streamfiap.exception.CreditosInsuficientesException;
+ 
 import jakarta.persistence.*;
-
+ 
 @Entity
+
 @Table(name = "usuarios")
+
 public class Usuario {
+ 
+    // Bug 06: Adicionada estratégia de geração automática de ID
 
-    // Bug 06: Adicionada a geração automática de ID
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-
+ 
     private String nome;
+
     private int idade;
+
     private double creditos;
-
-    public Usuario() {
-    }
-
+ 
+    public Usuario() {}
+ 
     public Usuario(String nome, int idade, double creditos) {
-        // Bug 05: Corrigido de 'nome = nome;' para 'this.nome = nome;'
+
+        // Bug 05: Corrigida a atribuição do nome utilizando o operador 'this'
+
         this.nome = nome;
+
         this.idade = idade;
+
         this.creditos = creditos;
+
     }
-
-    public boolean temCreditosSuficientes(double preco) {
-        return this.creditos >= preco;
-    }
-
-    public void debitarCreditos(double valor) {
-        this.creditos = this.creditos - valor;
-    }
-
-    public Usuario alugar(Conteudo c) throws ClassificacaoIndicativaException {
-        if (this.idade < c.getClassificacaoEtaria()) {
-            throw new ClassificacaoIndicativaException("Usuário de " + this.idade
-                    + " anos não pode assistir a " + c.getTitulo()
-                    + " (classificação " + c.getClassificacaoEtaria() + " anos)");
-        }
-
-        double p = c.calcularPrecoAluguel();
-
-        if (!temCreditosSuficientes(p)) {
-            throw new CreditosInsuficientesException("Créditos insuficientes para alugar " + c.getTitulo());
-        }
-
-        debitarCreditos(p);
-        c.setDisponivel(false);
-
-        System.out.println("==================================================");
-        System.out.println("RECIBO STREAMFIAP");
-        System.out.println("Usuario: " + this.nome);
-        System.out.println("Conteudo: " + c.getTitulo());
-        System.out.println("Valor pago: R$ " + p);
-        System.out.println("Creditos restantes: R$ " + this.creditos);
-        System.out.println("Obrigado por usar o StreamFIAP!");
-        System.out.println("==================================================");
-
-        return this;
-    }
-
+ 
     // Getters e Setters
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
 
-    public String getNome() {
-        return nome;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getNome() { return nome; }
 
-    public int getIdade() {
-        return idade;
-    }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
+    public int getIdade() { return idade; }
 
-    public double getCreditos() {
-        return creditos;
-    }
+    public void setIdade(int idade) { this.idade = idade; }
 
-    public void setCreditos(double creditos) {
-        this.creditos = creditos;
-    }
+    public double getCreditos() { return creditos; }
+
+    public void setCreditos(double creditos) { this.creditos = creditos; }
+
 }
+ 
